@@ -1,0 +1,6 @@
+.idea
+__pycache__
+application-2022-07-08.log
+application-2022-07-10.log
+error.log
+syslog
