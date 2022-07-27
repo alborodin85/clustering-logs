@@ -1,17 +1,11 @@
-import numpy
-
-import importer
 import pandas_options
-import re
-import pandas as pd
-import os
 from TextPreparer import TextPreparer
 from Profiler import Profiler
 from Estimator import Estimator
 from DataRetriever import DataRetriever
 from ClusterVisualisator import ClusterVisualisator
 from ResultHandler import ResultHandler
-import pandas
+from TextPrepareOptions import TextPrepareOptions
 
 profiler = Profiler()
 profiler.start()
@@ -20,7 +14,7 @@ profiler.start()
 # startRowRegExp = r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)'
 
 logPath = r'C:\borodin_admin\Институт\_ВКР\2022-06-14 Приложение\clustering-logs\error.log'
-startRowRegExp = r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})'
+startRowRegExp = r'(\d{4}-\d{2}-\d{2} {1,2}\d{1,2}:\d{2}:\d{2})'
 
 # logPath = r'C:\borodin_admin\Институт\_ВКР\2022-06-14 Приложение\clustering-logs\syslog'
 # startRowRegExp = r'\w{3} \d{2} \d{2}:\d{2}:\d{2}'
@@ -29,36 +23,25 @@ textFile = DataRetriever.readFile(logPath)
 countSamples = 10_000
 texts = DataRetriever.splitText(startRowRegExp, textFile, countSamples)
 profiler.addPoint('text retrieving')
-
+textPrepareOptions = TextPrepareOptions()
 textPreparer = TextPreparer()
-train = textPreparer.prepare(
-    texts,
-    strip=True,
-    lower=True,
-    clearPunctuation=True,
-    clearDigits=True,
-    stopWordsEnglish=True,
-    stopWordsRussian=False,
-    lemmatizationEnglish=True,
-    stemmingEnglish=False,
-    stemmingRussian=False,
-    sinonymizeEnglish=False,
-)
-profiler.addPoint('text prepare')
+
+train = textPreparer.prepare(texts, textPrepareOptions)
+profiler.addPoint('text prepare', True)
 
 features = TextPreparer.tfIdf(train)
 print('до очистки редких слов: ', features[1].shape)
 profiler.addPoint('tfidf-1')
 
-train = TextPreparer.clearRearWords(train=train, minCountRepeat=3, inAllDocument=True)
+train = TextPreparer.clearRearWords(train=train, minCountRepeat=0, inAllDocument=False)
 print('train.shape', train.shape)
-profiler.addPoint('clearRearWords')
+profiler.addPoint('clearRearWords', True)
 
 features = TextPreparer.tfIdf(train)
 tfIdf = features[0]
 train = tfIdf
 print('после очистки редких слов: ', features[1].shape)
-profiler.addPoint('tfidf-2')
+profiler.addPoint('tfidf-2', True)
 
 [reducedTsne, reducedPca] = ClusterVisualisator.reduceDimensionality(train, isTsne=False, isPca=True)
 ClusterVisualisator.visualizeMonocrome(reducedTsne, reducedPca)
@@ -75,7 +58,7 @@ n_clusters = len(targetsUniq)
 dbscanPredictions = TextPreparer.vectorizeLabels(dbscanPredictions)
 ClusterVisualisator.visualizeColor(n_clusters, reducedPca, dbscanPredictions)
 
-profiler.addPoint('clustering DBSCAN')
+profiler.addPoint('clustering DBSCAN', True)
 
 [clustersItems, clustersItemsCount, clustersWords] = ResultHandler.parsePridictions(features[1], dbscanPredictions, train)
 
@@ -84,9 +67,11 @@ print(clustersItemsCount)
 print('clustersWords')
 print(clustersWords)
 
-testCluster = clustersItems[1]
+testCluster = clustersItems[0]
+f = open('samples.txt', 'w')
 for sampleId in testCluster:
-    print(texts[sampleId])
+    f.write(sampleId)
+f.close()
 
 profiler.addPoint('build words DBSCAN')
 # n_clusters = 6
