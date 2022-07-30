@@ -32,10 +32,8 @@ class Estimator:
     @staticmethod
     def estimateByTargets(predictions: numpy.ndarray, targets: numpy.ndarray) -> list:
         """
-        :param n_clusters: число кластеров
         :param predictions: список предсказанных кластеров
         :param targets: список фактических кластеров
-        :param train: numpy-массив с тренировочными данными
         :return: словарь с усредненными метриками и словарь с соотношениями кластеров predictions и targets
         """
         [predictClusters, targetClusters] = Estimator.groupLabels(predictions, targets)

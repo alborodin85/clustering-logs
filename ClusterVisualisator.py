@@ -2,11 +2,11 @@ import numpy
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-import seaborn as sns
+
 
 class ClusterVisualisator:
     @staticmethod
-    def reduceDimensionality(train: numpy.ndarray, isTsne = False, isPca = False) -> list:
+    def reduceDimensionality(train: numpy.ndarray, isTsne=False, isPca=False) -> list:
         reducedTsne = numpy.array([])
         reducedPca = numpy.array([])
         if isTsne:
@@ -19,7 +19,7 @@ class ClusterVisualisator:
     def visualizeColor(n_clusters, redusedData, dbscanPredictions):
         cmap = plt.cm.get_cmap('nipy_spectral_r', n_clusters)
         dots = plt.scatter(redusedData[:, 0], redusedData[:, 1], c=dbscanPredictions, cmap=cmap)
-        colorbar = plt.colorbar(dots)
+        # colorbar = plt.colorbar(dots)
         plt.show()
 
     @staticmethod
