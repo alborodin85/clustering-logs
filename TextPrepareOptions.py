@@ -2,7 +2,7 @@ class TextPrepareOptions:
     def __init__(self):
         isMySqlLog = True
 
-        self.nClusters = 3
+        self.nClusters = 15685
 
         self.strip = True
         self.lower = True
