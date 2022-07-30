@@ -9,10 +9,10 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
-from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 from Synonymizer import Synonymizer
 import re
+from TextPrepareOptions import TextPrepareOptions
 
 
 class TextPreparer:
@@ -55,7 +55,6 @@ class TextPreparer:
 
         return pandas.Series(clearTrain)
 
-
     @staticmethod
     def vectorizeLabels(strLabels: list) -> np.ndarray:
         labelsUniq = list(set(strLabels))
@@ -78,34 +77,32 @@ class TextPreparer:
 
         return [feature_matrix.toarray(), vocabulary]
 
-    def prepare(
-            self,
-            train: pandas.Series,
-            strip=False,
-            lower=False,
-            clearEmails=False,
-            clearPunctuation=False,
-            clearDigits=False,
-            stopWordsEnglish=False,
-            stopWordsRussian=False,
-            lemmatizationEnglish=False,
-            stemmingEnglish=False,
-            stemmingRussian=False,
-            sinonymizeEnglish=False
-    ) -> pandas.Series:
+    @staticmethod
+    def sliceMessages(texts: pandas.Series, countRows: int) -> pandas.Series:
+        if not countRows:
+            return texts
+        result = []
+        for textItem in texts:
+            rows = textItem.split('\n')
+            message = '\n'.join(rows[:countRows])
+            message += '\n'
+            result.append(message)
 
-        train: pandas.Series,
-        strip = False,
-        lower = False,
-        clearEmails = False,
-        clearPunctuation = False,
-        clearDigits = False,
-        stopWordsEnglish = False,
-        stopWordsRussian = False,
-        lemmatizationEnglish = False,
-        stemmingEnglish = False,
-        stemmingRussian = False,
-        sinonymizeEnglish = False
+        return pandas.Series(result)
+
+    def prepare(self, train: pandas.Series, textPrepareOptions: TextPrepareOptions) -> pandas.Series:
+
+        strip = textPrepareOptions.strip
+        lower = textPrepareOptions.lower
+        clearEmails = textPrepareOptions.clearEmails
+        clearPunctuation = textPrepareOptions.clearPunctuation
+        clearDigits = textPrepareOptions.clearDigits
+        stopWordsEnglish = textPrepareOptions.stopWordsEnglish
+        stopWordsRussian = textPrepareOptions.stopWordsRussian
+        lemmatizationEnglish = textPrepareOptions.lemmatizationEnglish
+        stemmingEnglish = textPrepareOptions.stemmingEnglish
+        stemmingRussian = textPrepareOptions.stemmingRussian
+        sinonymizeEnglish = textPrepareOptions.sinonymizeEnglish
 
         punctuation = dict.fromkeys([i for i in range(sys.maxunicode) if unicodedata.category(chr(i)).startswith('P')], ' ')
 
@@ -153,7 +150,7 @@ class TextPreparer:
                 string = [snowball.stem(word) for word in string]
 
             if sinonymizeEnglish:
-                 string = [self.synonymizer.getMainSynonym(word) for word in string]
+                string = [self.synonymizer.getMainSynonym(word) for word in string]
 
             string = ' '.join(string)
 
@@ -171,7 +168,7 @@ class TextPreparer:
         if itemsInLastButch:
             countButches += 1
 
-        if countButches == 1 :
+        if countButches == 1:
             itemsInButch = itemsInLastButch
 
         batches = []

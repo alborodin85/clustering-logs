@@ -24,7 +24,9 @@ class Profiler:
         print('Profiler: ' + pointName + f' ({durationSec:.3f} c)')
 
     def print(self):
-        print('timeProfiler')
+        print('\ntimeProfiler')
         print(self.points)
+        print()
         print(f'total Time: {self.totalTime} s')
         print(f'production Time: {self.prodTime} s')
+        print()
