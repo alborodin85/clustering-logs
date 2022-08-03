@@ -28,6 +28,20 @@ fetch20Newsgroups = datasets.fetch_20newsgroups(
 texts = pandas.Series(fetch20Newsgroups[0])
 profiler.addPoint('text retrieving')
 
+# dataFrame = pandas.read_csv('hierarchical_text_classification/train_40k.csv')
+# texts = dataFrame['Title'] + ' ' + dataFrame['Text']
+# texts = texts[:10000]
+
+countRows = 0
+for text in texts:
+    subArr = str(text).split('\n')
+    countRows += len(subArr)
+
+print('countRows', countRows)
+profiler.addPoint('text retrieving')
+
+exit()
+
 textPreparer = TextPreparer()
 texts = textPreparer.sliceMessages(texts, 0)
 train = textPreparer.prepare(texts, textPrepareOptions)
@@ -88,22 +102,3 @@ predictionsFile.close()
 profiler.addPoint('serialize result')
 
 profiler.print()
-
-# from sklearn.cluster import KMeans
-# clusteringModel = KMeans(n_clusters=n_clusters, max_iter=300, random_state=21)
-# clusteringModel.fit(train)
-# kmeansPredictions = clusteringModel.predict(train)
-# # ClusterVisualisator.visualizeColor(n_clusters, reducedPca, kmeansPredictions)
-# profiler.addPoint('clustering KMeans')
-#
-# estimationByFeatures = Estimator.estimateByFeatures(kmeansPredictions, train)
-# print('estimationByFeaturesKmeans')
-# print(estimationByFeatures)
-# profiler.addPoint('estimationByFeaturesKmeans duration')
-#
-# estimationByTargets = Estimator.estimateByTargets(dbscanPredictions, kmeansPredictions)
-# print('estimationByTargets')
-# print(estimationByTargets[0])
-# profiler.addPoint('F1-estimation duration')
-
-# print(profiler.print())

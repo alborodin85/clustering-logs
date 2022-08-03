@@ -1,8 +1,8 @@
 class TextPrepareOptions:
     def __init__(self):
-        isMySqlLog = True
+        isMySqlLog = False
 
-        self.nClusters = 15685
+        self.nClusters = 5
 
         self.strip = True
         self.lower = True
@@ -30,4 +30,5 @@ class TextPrepareOptions:
             self.startRowRegExp = r'(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)'
 
         # self.logPath = r'C:\borodin_admin\Институт\_ВКР\2022-06-14 Приложение\clustering-logs\fpm-fcgi-laravel-2022-07-25.log'
+        # self.logPath = r'C:\borodin_admin\Институт\_ВКР\2022-06-14 Приложение\clustering-logs\cli-laravel-2022-07-25.log'
         # self.startRowRegExp = r'(\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\])'

@@ -5,4 +5,5 @@ application-2022-07-10.log
 error.log
 syslog
 fpm-fcgi-laravel-2022-07-25.log
+cli-laravel-2022-07-25.log
 samples.txt

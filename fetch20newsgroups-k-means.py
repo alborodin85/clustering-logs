@@ -29,6 +29,11 @@ fetch20Newsgroups = datasets.fetch_20newsgroups(
 texts = pandas.Series(fetch20Newsgroups[0])
 profiler.addPoint('text retrieving')
 
+# dataFrame = pandas.read_csv('hierarchical_text_classification/train_40k.csv')
+# texts = dataFrame['Title'] + ' ' + dataFrame['Text']
+# texts = texts[:10000]
+# profiler.addPoint('text retrieving')
+
 textPreparer = TextPreparer()
 texts = textPreparer.sliceMessages(texts, 0)
 train = textPreparer.prepare(texts, textPrepareOptions)

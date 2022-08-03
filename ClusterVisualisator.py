@@ -19,7 +19,7 @@ class ClusterVisualisator:
     def visualizeColor(n_clusters, redusedData, dbscanPredictions):
         cmap = plt.cm.get_cmap('nipy_spectral_r', n_clusters)
         dots = plt.scatter(redusedData[:, 0], redusedData[:, 1], c=dbscanPredictions, cmap=cmap)
-        # colorbar = plt.colorbar(dots)
+        colorbar = plt.colorbar(dots)
         plt.show()
 
     @staticmethod

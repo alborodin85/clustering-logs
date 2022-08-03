@@ -1,5 +1,4 @@
 import sys
-
 import numpy
 import unicodedata
 import numpy as np
@@ -111,6 +110,7 @@ class TextPreparer:
         )
 
         def handleString(string: str) -> str:
+            string = str(string)
             if lower:
                 string = string.lower()
             if clearEmails:
